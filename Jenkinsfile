@@ -3,7 +3,14 @@ pipeline {
     stages {
         stage('SCM') {
             steps {
-                checkout scm
+                checkout scm  // Checkout the code from the repository
+            }
+        }
+        stage('Build') {
+            steps {
+                // Add a build step to compile the code
+                sh 'mvn clean install'  // If you're using Maven, this builds the project
+                // For Gradle, use: sh './gradlew build'
             }
         }
         stage('SonarQube Analysis') {
