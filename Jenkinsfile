@@ -21,7 +21,8 @@ pipeline {
     }
     post {
         always {
-            // Cleanup or notifications (if necessary)
+            // This is to prevent the error, and you can add cleanup if necessary
+            echo 'This will run always after the pipeline execution.'
         }
     }
 }
