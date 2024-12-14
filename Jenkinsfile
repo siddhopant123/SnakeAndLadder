@@ -1,24 +1,29 @@
 pipeline {
     agent any
     stages {
-        stage('SCM') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm  // Checkout the code from the repository
+                // Checkout the GitHub repository
+                git url: 'https://github.com/siddhopant123/SnakeAndLadder.git', branch: 'master'
             }
         }
         stage('Build') {
             steps {
-                // Add a build step to compile the code
-                sh 'mvn clean install'  // If you're using Maven, this builds the project
-                // For Gradle, use: sh './gradlew build'
+                script {
+                    // Use the Maven tool configured in Jenkins
+                    def mvnHome = tool name: 'Default Maven', type: 'maven'
+                    // Run Maven commands
+                    sh "${mvnHome}/bin/mvn clean install"
+                }
             }
         }
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarScanner'  // Use the correct tool name for SonarScanner
-                    withSonarQubeEnv('sq1') {  // Reference the SonarQube server name you defined
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    // Use SonarQube environment configured in Jenkins
+                    withSonarQubeEnv('sq1') { // Replace 'sq1' with the name of your SonarQube server
+                        def mvnHome = tool name: 'Default Maven', type: 'maven'
+                        sh "${mvnHome}/bin/mvn sonar:sonar -Dsonar.projectKey=snake-ladder-project -Dsonar.projectName='Snake Ladder Project'"
                     }
                 }
             }
@@ -26,7 +31,7 @@ pipeline {
     }
     post {
         always {
-            echo 'This will run always after the pipeline execution.'
+            echo 'Pipeline execution completed.'
         }
     }
 }
