@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        // Reference the installed Gradle tool
+        gradle 'Default Gradle' // Replace 'Default Gradle' with your Gradle tool name if different
+    }
     stages {
         stage('Checkout SCM') {
             steps {
